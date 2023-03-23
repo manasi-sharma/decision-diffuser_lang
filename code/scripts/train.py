@@ -1,3 +1,6 @@
+import sys
+sys.path.append('/iliad/u/manasis/decision-diffuser_lang/code/')
+
 import diffuser.utils as utils
 import torch
 
@@ -174,3 +177,5 @@ def main(**deps):
         logger.print(f'Epoch {i} / {n_epochs} | {logger.prefix}')
         trainer.train(n_train_steps=Config.n_steps_per_epoch)
 
+if __name__ == "__main__":
+    main()

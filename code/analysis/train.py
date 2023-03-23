@@ -1,3 +1,6 @@
+import sys
+sys.path.append('/iliad/u/manasis/decision-diffuser_lang/code/')
+
 if __name__ == '__main__':
     from ml_logger import logger, instr, needs_relaunch
     from analysis import RUN

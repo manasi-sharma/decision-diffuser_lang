@@ -6,8 +6,8 @@ class Config(ParamsProto):
     # misc
     seed = 100
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    bucket = '/home/aajay/weights/'
-    dataset = 'hopper-medium-expert-v2'
+    bucket = '/iliad/u/manasis/decision-diffuser/code/weights/'
+    dataset = 'kitchen-mixed-v0'
 
     ## model
     model = 'models.TemporalUnet'
