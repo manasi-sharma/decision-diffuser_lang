@@ -30,10 +30,10 @@ class SequenceDataset(torch.utils.data.Dataset):
 
         fields = ReplayBuffer(max_n_episodes, max_path_length, termination_penalty)
         for i, episode in enumerate(itr):
-            import pdb;pdb.set_trace()
             fields.add_path(episode)
         fields.finalize()
 
+        import pdb;pdb.set_trace()
         self.normalizer = DatasetNormalizer(fields, normalizer, path_lengths=fields['path_lengths'])
         self.indices = self.make_indices(fields.path_lengths, horizon)
 
