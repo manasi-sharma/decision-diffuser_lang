@@ -70,6 +70,8 @@ def sequence_dataset(env, preprocess_fn):
     dataset = get_dataset(env)
     dataset = preprocess_fn(dataset)
 
+    import pdb;pdb.set_trace()
+
     N = dataset['rewards'].shape[0]
     data_ = collections.defaultdict(list)
 
