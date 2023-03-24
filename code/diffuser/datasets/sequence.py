@@ -33,7 +33,6 @@ class SequenceDataset(torch.utils.data.Dataset):
             fields.add_path(episode)
         fields.finalize()
 
-        import pdb;pdb.set_trace()
         self.normalizer = DatasetNormalizer(fields, normalizer, path_lengths=fields['path_lengths'])
         self.indices = self.make_indices(fields.path_lengths, horizon)
 
