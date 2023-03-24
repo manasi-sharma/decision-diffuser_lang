@@ -7,7 +7,7 @@ class Config(ParamsProto):
     seed = 100
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     bucket = '/iliad/u/manasis/decision-diffuser/code/weights/'
-    dataset = 'kitchen-v1' #'kitchen-mixed-v0'
+    dataset = 'kitchen-mixed-v0'
 
     ## model
     model = 'models.TemporalUnet'
