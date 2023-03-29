@@ -40,9 +40,7 @@ def load_environment(name):
     return env
 
 def get_dataset(env):
-    import pdb;pdb.set_trace()
     dataset = env.get_dataset()
-    import pdb;pdb.set_trace()
 
     if 'antmaze' in str(env).lower():
         ## the antmaze-v0 environments have a variety of bugs

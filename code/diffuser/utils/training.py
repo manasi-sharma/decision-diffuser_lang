@@ -12,6 +12,10 @@ from .timer import Timer
 from .cloud import sync_logs
 from ml_logger import logger
 
+from diffuser.datasets.diffusionpolicy_datasets.base_dataset import BaseLowdimDataset
+from torch.utils.data import DataLoader
+import hydra
+
 def cycle(dl):
     while True:
         for data in dl:
@@ -76,12 +80,23 @@ class Trainer(object):
 
         self.dataset = dataset
 
-        self.dataloader = cycle(torch.utils.data.DataLoader(
+        # Actual load in of data from directories
+        """self.dataloader = cycle(torch.utils.data.DataLoader(
             self.dataset, batch_size=train_batch_size, num_workers=0, shuffle=True, pin_memory=True
         ))
         self.dataloader_vis = cycle(torch.utils.data.DataLoader(
             self.dataset, batch_size=1, num_workers=0, shuffle=True, pin_memory=True
-        ))
+        ))"""
+        cfg_dataloader = {'batch_size': 256, 'num_workers': 1, 'persistent_workers': False, 'pin_memory': True, 'shuffle': True}
+        cfg_valdataloader = {'batch_size': 256, 'num_workers': 1, 'persistent_workers': False, 'pin_memory': True, 'shuffle': False}
+        cfg_task_dataset = {'_target_': 'diffuser.datasets.diffusionpolicy_datasets.kitchen_mjl_lowdim_dataset.KitchenMjlLowdimDataset', 'abs_action': True, 'dataset_dir': 'data/kitchen/kitchen_demos_multitask', 'horizon': 16, 'pad_after': 7, 'pad_before': 1, 'robot_noise_ratio': 0.1, 'seed': 42, 'val_ratio': 0.02}
+
+        dataset: BaseLowdimDataset
+        dataset = hydra.utils.instantiate(cfg_task_dataset) #cfg.task.dataset)
+        self.dataloader = DataLoader(dataset, cfg_dataloader) #**cfg.dataloader)
+
+        import pdb;pdb.set_trace()
+
         self.renderer = renderer
         self.optimizer = torch.optim.Adam(diffusion_model.parameters(), lr=train_lr)
 
@@ -134,7 +149,7 @@ class Trainer(object):
                 metrics['loss'] = loss.detach().item()
                 logger.log_metrics_summary(metrics, default_stats='mean')
 
-            if self.step == 0 and self.sample_freq:
+            """if self.step == 0 and self.sample_freq:
                 self.render_reference(self.n_reference)
 
             if self.sample_freq and self.step % self.sample_freq == 0:
@@ -143,7 +158,7 @@ class Trainer(object):
                 elif self.model.__class__ == diffuser.models.diffusion.ActionGaussianDiffusion:
                     pass
                 else:
-                    self.render_samples()
+                    self.render_samples()"""
 
             self.step += 1
 
@@ -189,9 +204,11 @@ class Trainer(object):
         '''
 
         ## get a temporary dataloader to load a single batch
-        dataloader_tmp = cycle(torch.utils.data.DataLoader(
+        """dataloader_tmp = cycle(torch.utils.data.DataLoader(
             self.dataset, batch_size=batch_size, num_workers=0, shuffle=True, pin_memory=True
-        ))
+        ))"""
+
+
         batch = dataloader_tmp.__next__()
         dataloader_tmp.close()
 
