@@ -37,7 +37,9 @@ class KitchenMjlLowdimDataset(BaseLowdimDataset):
 
         data_directory = pathlib.Path(dataset_dir)
         self.replay_buffer = ReplayBuffer.create_empty_numpy()
+        import pdb;pdb.set_trace()
         for i, mjl_path in enumerate(tqdm(list(data_directory.glob('*/*.mjl')))):
+            import pdb;pdb.set_trace()
             try:
                 data = parse_mjl_logs(str(mjl_path.absolute()), skipamount=40)
                 qpos = data['qpos'].astype(np.float32)
