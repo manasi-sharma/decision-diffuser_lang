@@ -15,6 +15,7 @@ from ml_logger import logger
 from diffuser.datasets.diffusionpolicy_datasets.base_dataset import BaseLowdimDataset
 from torch.utils.data import DataLoader
 import hydra
+from diffuser.datasets.diffusionpolicy_datasets.kitchen_mjl_lowdim_dataset import KitchenMjlLowdimDataset
 
 def cycle(dl):
     while True:
@@ -89,11 +90,13 @@ class Trainer(object):
         ))"""
         cfg_dataloader = {'batch_size': 256, 'num_workers': 1, 'persistent_workers': False, 'pin_memory': True, 'shuffle': True}
         cfg_valdataloader = {'batch_size': 256, 'num_workers': 1, 'persistent_workers': False, 'pin_memory': True, 'shuffle': False}
-        cfg_task_dataset = {'_target_': 'diffuser.datasets.diffusionpolicy_datasets.kitchen_mjl_lowdim_dataset.KitchenMjlLowdimDataset', 'abs_action': True, 'dataset_dir': 'data/kitchen/kitchen_demos_multitask', 'horizon': 16, 'pad_after': 7, 'pad_before': 1, 'robot_noise_ratio': 0.1, 'seed': 42, 'val_ratio': 0.02}
+        cfg_task_dataset = {'abs_action': True, 'dataset_dir': 'data/kitchen/kitchen_demos_multitask', 'horizon': 16, 'pad_after': 7, 
+                            'pad_before': 1, 'robot_noise_ratio': 0.1, 'seed': 42, 'val_ratio': 0.02}
 
         dataset: BaseLowdimDataset
-        dataset = hydra.utils.instantiate(cfg_task_dataset) #cfg.task.dataset)
-        self.dataloader = DataLoader(dataset, cfg_dataloader) #**cfg.dataloader)
+        #dataset = hydra.utils.instantiate(cfg_task_dataset) #cfg.task.dataset)
+        dataset = KitchenMjlLowdimDataset(**cfg_task_dataset)
+        self.dataloader = DataLoader(dataset, **cfg_dataloader) #**cfg.dataloader)
 
         import pdb;pdb.set_trace()
 
