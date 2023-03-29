@@ -12,7 +12,7 @@ from .timer import Timer
 from .cloud import sync_logs
 from ml_logger import logger
 
-from ..datasets.diffusionpolicy_datasets.base_dataset import BaseLowdimDataset
+from diffuser.datasets.diffusionpolicy_datasets.base_dataset import BaseLowdimDataset
 from torch.utils.data import DataLoader
 import hydra
 
