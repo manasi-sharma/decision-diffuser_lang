@@ -37,9 +37,7 @@ class KitchenMjlLowdimDataset(BaseLowdimDataset):
 
         data_directory = pathlib.Path(dataset_dir)
         self.replay_buffer = ReplayBuffer.create_empty_numpy()
-        import pdb;pdb.set_trace()
         for i, mjl_path in enumerate(tqdm(list(data_directory.glob('*/*.mjl')))):
-            import pdb;pdb.set_trace()
             try:
                 data = parse_mjl_logs(str(mjl_path.absolute()), skipamount=40)
                 qpos = data['qpos'].astype(np.float32)
@@ -67,12 +65,10 @@ class KitchenMjlLowdimDataset(BaseLowdimDataset):
                     'action': data['ctrl'].astype(np.float32),
                     'lang': np.cumsum(np.repeat(np.array([[1, 2, 3, 4, 5]]), obs.shape[0], axis=0), axis=0) #lang
                 }
-                import pdb;pdb.set_trace()
                 self.replay_buffer.add_episode(episode)
             except Exception as e:
                 print(i, e)
 
-        #import pdb;pdb.set_trace()
         val_mask = get_val_mask(
             n_episodes=self.replay_buffer.n_episodes, 
             val_ratio=val_ratio,
