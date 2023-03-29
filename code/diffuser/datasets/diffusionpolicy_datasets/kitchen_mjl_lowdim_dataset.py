@@ -13,6 +13,8 @@ from diffuser.datasets.diffusionpolicy_datasets.kitchen_util import parse_mjl_lo
 
 import re
 
+from sentence_transformers import SentenceTransformer
+
 class KitchenMjlLowdimDataset(BaseLowdimDataset):
     def __init__(self,
             dataset_dir,
@@ -34,6 +36,12 @@ class KitchenMjlLowdimDataset(BaseLowdimDataset):
             0.0005, 0.005 , 0.005 , 0.005 , 0.1   , 0.1   , 0.1   , 0.005 ,
             0.005 , 0.005 , 0.1   , 0.1   , 0.1   , 0.005 ], dtype=np.float32)
         rng = np.random.default_rng(seed=seed)
+
+        # Loading in Language Encoder
+        lang_embed_model = SentenceTransformer('clip-ViT-B-32')
+
+        # phrase to sentence converter
+        #p_to_s = 
 
         data_directory = pathlib.Path(dataset_dir)
         self.replay_buffer = ReplayBuffer.create_empty_numpy()
@@ -59,6 +67,10 @@ class KitchenMjlLowdimDataset(BaseLowdimDataset):
                     lang = found_1.group(1)
                 if found_2:
                     lang = found_2.group(1)
+                
+
+                text_emb = lang_embed_model.encode(lang)
+                import pdb;pdb.set_trace()
 
                 episode = {
                     'obs': obs,

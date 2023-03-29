@@ -96,7 +96,6 @@ class Trainer(object):
         dataset: BaseLowdimDataset
         #dataset = hydra.utils.instantiate(cfg_task_dataset) #cfg.task.dataset)
         dataset = KitchenMjlLowdimDataset(**cfg_task_dataset)
-        #dataset = KitchenMjlLowdimDataset(abs_action=True, dataset_dir='data/kitchen/kitchen_demos_multitask', horizon=16, pad_after=7, pad_before=1, robot_noise_ratio=0.1, seed=42, val_ratio=0.02)
         self.dataloader = DataLoader(dataset, **cfg_dataloader) #**cfg.dataloader)
 
         import pdb;pdb.set_trace()
