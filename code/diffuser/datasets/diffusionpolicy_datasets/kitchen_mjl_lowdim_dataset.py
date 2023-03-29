@@ -4,12 +4,12 @@ import numpy as np
 import copy
 import pathlib
 from tqdm import tqdm
-from diffusion_policy.common.pytorch_util import dict_apply
-from diffusion_policy.common.replay_buffer import ReplayBuffer
-from diffusion_policy.common.sampler import SequenceSampler, get_val_mask
-from diffusion_policy.model.common.normalizer import LinearNormalizer, SingleFieldLinearNormalizer
-from diffusion_policy.dataset.base_dataset import BaseLowdimDataset
-from diffusion_policy.env.kitchen.kitchen_util import parse_mjl_logs
+from diffuser.datasets.diffusionpolicy_datasets.pytorch_util import dict_apply
+from diffuser.datasets.diffusionpolicy_datasets.replay_buffer import ReplayBuffer
+from diffuser.datasets.diffusionpolicy_datasets.sampler import SequenceSampler, get_val_mask
+from diffuser.datasets.diffusionpolicy_datasets.normalizer import LinearNormalizer, SingleFieldLinearNormalizer
+from diffuser.datasets.diffusionpolicy_datasets.base_dataset import BaseLowdimDataset
+from diffuser.datasets.diffusionpolicy_datasets.kitchen_util import parse_mjl_logs
 
 import re
 
