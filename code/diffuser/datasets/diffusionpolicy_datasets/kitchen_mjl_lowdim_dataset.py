@@ -13,7 +13,7 @@ from diffuser.datasets.diffusionpolicy_datasets.kitchen_util import parse_mjl_lo
 
 import re
 
-from sentence_transformers import SentenceTransformer
+from voltron import instantiate_extractor, load
 
 class KitchenMjlLowdimDataset(BaseLowdimDataset):
     def __init__(self,
@@ -38,7 +38,8 @@ class KitchenMjlLowdimDataset(BaseLowdimDataset):
         rng = np.random.default_rng(seed=seed)
 
         # Loading in Language Encoder
-        lang_embed_model = SentenceTransformer('clip-ViT-B-32')
+        vcond, preprocess = load("v-cond", device="cuda", freeze=True)
+        vector_extractor = instantiate_extractor(vcond)()
 
         # phrase to sentence converter
         #p_to_s = 
@@ -67,9 +68,12 @@ class KitchenMjlLowdimDataset(BaseLowdimDataset):
                     lang = found_1.group(1)
                 if found_2:
                     lang = found_2.group(1)
-                
 
-                text_emb = lang_embed_model.encode(lang)
+                # Phrase to full sentence
+                
+                # Encoding in language model
+                multimodal_embeddings = vcond(lang, mode="multimodal")
+                representation = vector_extractor(multimodal_embeddings.cpu())
                 import pdb;pdb.set_trace()
 
                 episode = {
