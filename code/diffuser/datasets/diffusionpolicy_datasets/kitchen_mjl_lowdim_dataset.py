@@ -74,6 +74,8 @@ class KitchenMjlLowdimDataset(BaseLowdimDataset):
                 # Encoding in language model
                 multimodal_embeddings = vcond(lang, mode="multimodal")
                 representation = vector_extractor(multimodal_embeddings.cpu())
+                lang_repr_indv = representation.detach().numpy()
+                lang_repr = np.repeat(lang_repr_indv, obs.shape[0], axis=0)
                 import pdb;pdb.set_trace()
 
                 episode = {
