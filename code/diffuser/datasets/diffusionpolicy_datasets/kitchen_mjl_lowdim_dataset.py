@@ -80,7 +80,7 @@ class KitchenMjlLowdimDataset(BaseLowdimDataset):
                 # Phrase to full sentence
                 subtasks = lang.split('_')
                 subtasks_sentence_list = [p_to_s[subtask] for subtask in subtasks]
-                subtasks_sentence = ', and '.join(subtasks_sentence_list)
+                subtasks_sentence = ', and '.join(subtasks_sentence_list).lower().capitalize()
                 
                 # Encoding in language model
                 multimodal_embeddings = vcond(subtasks_sentence, mode="multimodal")
