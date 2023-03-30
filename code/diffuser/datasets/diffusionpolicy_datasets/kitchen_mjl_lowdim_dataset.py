@@ -42,7 +42,15 @@ class KitchenMjlLowdimDataset(BaseLowdimDataset):
         vector_extractor = instantiate_extractor(vcond)()
 
         # phrase to sentence converter
-        #p_to_s = 
+        p_to_s = {
+            'kettle': 'Move the kettle to the top burner',
+            'bottomknob': 'Turn the oven knob that activates the bottom burner', 
+            'hinge': 'Open the hinge cabinet',
+            'slide': 'Open the slide cabinet',
+            'switch': 'Turn on the light switch',
+            'topknob': 'Turn the oven knob that activates the top burner',
+            'microwave': 'Open the microwave door',
+        }
 
         data_directory = pathlib.Path(dataset_dir)
         self.replay_buffer = ReplayBuffer.create_empty_numpy()
@@ -70,9 +78,12 @@ class KitchenMjlLowdimDataset(BaseLowdimDataset):
                     lang = found_2.group(1)
 
                 # Phrase to full sentence
+                subtasks = lang.split('_')
+                subtasks_sentence_list = [p_to_s[subtask] for subtask in subtasks]
+                subtasks_sentence = ', '.join(subtasks_sentence_list)
                 
                 # Encoding in language model
-                multimodal_embeddings = vcond(lang, mode="multimodal")
+                multimodal_embeddings = vcond(subtasks_sentence, mode="multimodal")
                 representation = vector_extractor(multimodal_embeddings.cpu())
                 lang_repr_indv = representation.detach().numpy()
                 lang_repr = np.repeat(lang_repr_indv, obs.shape[0], axis=0)
@@ -81,7 +92,7 @@ class KitchenMjlLowdimDataset(BaseLowdimDataset):
                 episode = {
                     'obs': obs,
                     'action': data['ctrl'].astype(np.float32),
-                    'lang': np.cumsum(np.repeat(np.array([[1, 2, 3, 4, 5]]), obs.shape[0], axis=0), axis=0) #lang
+                    'lang': lang_repr
                 }
                 self.replay_buffer.add_episode(episode)
             except Exception as e:
