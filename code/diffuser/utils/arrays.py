@@ -89,9 +89,13 @@ def set_device(device):
 		torch.set_default_tensor_type(torch.cuda.FloatTensor)
 
 def batch_to_device(batch, device='cuda:0'):
-    vals = [
+    """vals = [
         to_device(getattr(batch, field), device)
         for field in batch._fields
+    ]"""
+    vals = [
+        to_device(batch[field], device)
+        for field in batch.keys()
     ]
     return type(batch)(*vals)
 
