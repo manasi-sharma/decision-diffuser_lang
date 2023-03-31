@@ -98,7 +98,7 @@ class Trainer(object):
         dataset = KitchenMjlLowdimDataset(**cfg_task_dataset)
         self.dataloader = DataLoader(dataset, **cfg_dataloader) #**cfg.dataloader)
 
-        import pdb;pdb.set_trace()
+        #import pdb;pdb.set_trace()
 
         self.renderer = renderer
         self.optimizer = torch.optim.Adam(diffusion_model.parameters(), lr=train_lr)

@@ -87,7 +87,6 @@ class KitchenMjlLowdimDataset(BaseLowdimDataset):
                 representation = vector_extractor(multimodal_embeddings.cpu())
                 lang_repr_indv = representation.detach().numpy()
                 lang_repr = np.repeat(lang_repr_indv, obs.shape[0], axis=0)
-                import pdb;pdb.set_trace()
 
                 episode = {
                     'obs': obs,
