@@ -17,6 +17,9 @@ from torch.utils.data import DataLoader
 import hydra
 from diffuser.datasets.diffusionpolicy_datasets.kitchen_mjl_lowdim_dataset import KitchenMjlLowdimDataset
 
+import os
+os.environ["TOKENIZERS_PARALLELISM"] = "false"
+
 def cycle(dl):
     while True:
         for data in dl:
@@ -99,7 +102,7 @@ class Trainer(object):
         self.dataloader = cycle(DataLoader(dataset, **cfg_dataloader)) #**cfg.dataloader)
 
         # Create normalize
-        self.dataset_normalizer = self.dataset.get_normalizer()
+        #self.dataset_normalizer = self.dataset.get_normalizer()
 
         #import pdb;pdb.set_trace()
 
