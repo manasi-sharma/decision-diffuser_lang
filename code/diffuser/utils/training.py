@@ -99,7 +99,7 @@ class Trainer(object):
         self.dataloader = cycle(DataLoader(dataset, **cfg_dataloader)) #**cfg.dataloader)
 
         # Create normalize
-        self.normalizer = self.get_normalizer()
+        self.dataset_normalizer = self.dataset.get_normalizer()
 
         #import pdb;pdb.set_trace()
 
@@ -133,7 +133,7 @@ class Trainer(object):
         for step in range(n_train_steps):
             for i in range(self.gradient_accumulate_every):
                 batch = next(self.dataloader)
-                batch = self.dataset.normalizer.normalize(batch)
+                batch = self.dataset_normalizer.normalize(batch)
                 batch = batch_to_device(batch, device=self.device)
 
                 trajectories = np.concatenate([batch['action'], batch['observations']], axis=-1)
