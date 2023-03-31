@@ -133,7 +133,7 @@ class Trainer(object):
         for step in range(n_train_steps):
             for i in range(self.gradient_accumulate_every):
                 batch = next(self.dataloader)
-                batch = self.dataset_normalizer.normalize(batch)
+                #batch = self.dataset_normalizer.normalize(batch)
                 batch = batch_to_device(batch, device=self.device)
 
                 trajectories = np.concatenate([batch['action'], batch['observations']], axis=-1)
