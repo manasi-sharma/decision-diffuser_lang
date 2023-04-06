@@ -139,6 +139,7 @@ class Trainer(object):
                 #batch = self.dataset_normalizer.normalize(batch)
                 batch = batch_to_device(batch, device=self.device)
 
+                import pdb;pdb.set_trace()
                 trajectories = np.concatenate([batch['action'], batch['observations']], axis=-1)
                 conditions = {0: batch['observations'][0]}
                 import pdb;pdb.set_trace()
