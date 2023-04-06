@@ -82,7 +82,7 @@ class Trainer(object):
         self.batch_size = train_batch_size
         self.gradient_accumulate_every = gradient_accumulate_every
 
-        self.dataset = dataset
+        #self.dataset = dataset
 
         # Actual load in of data from directories
         """self.dataloader = cycle(torch.utils.data.DataLoader(
@@ -96,10 +96,10 @@ class Trainer(object):
         cfg_task_dataset = {'abs_action': True, 'dataset_dir': 'data/kitchen/kitchen_demos_multitask', 'horizon': 16, 'pad_after': 7, 
                             'pad_before': 1, 'robot_noise_ratio': 0.1, 'seed': 42, 'val_ratio': 0.02}
 
-        dataset: BaseLowdimDataset
+        self.dataset: BaseLowdimDataset
         #dataset = hydra.utils.instantiate(cfg_task_dataset) #cfg.task.dataset)
         self.dataset = KitchenMjlLowdimDataset(**cfg_task_dataset)
-        self.dataloader = cycle(DataLoader(dataset, **cfg_dataloader)) #**cfg.dataloader)
+        self.dataloader = cycle(DataLoader(self.dataset, **cfg_dataloader)) #**cfg.dataloader)
 
         # Create normalize
         #self.dataset_normalizer = self.dataset.get_normalizer()
