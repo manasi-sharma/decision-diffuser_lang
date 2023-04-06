@@ -99,9 +99,7 @@ class Trainer(object):
         dataset: BaseLowdimDataset
         #dataset = hydra.utils.instantiate(cfg_task_dataset) #cfg.task.dataset)
         self.dataset = KitchenMjlLowdimDataset(**cfg_task_dataset)
-        import pdb;pdb.set_trace()
         self.dataloader = cycle(DataLoader(dataset, **cfg_dataloader)) #**cfg.dataloader)
-        import pdb;pdb.set_trace()
 
         # Create normalize
         #self.dataset_normalizer = self.dataset.get_normalizer()
