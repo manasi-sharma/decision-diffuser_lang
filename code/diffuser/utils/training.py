@@ -137,13 +137,12 @@ class Trainer(object):
         for step in range(n_train_steps):
             for i in range(self.gradient_accumulate_every):
                 batch = next(self.dataloader)
+                language = batch['lang'][:, 0, :]
                 batch = self.normalizer.normalize(batch)
-                import pdb;pdb.set_trace()
                 batch = batch_to_device(batch, device=self.device)
 
                 trajectories = torch.concatenate([batch['action'], batch['obs']], axis=-1)
                 conditions = {0: batch['obs'][:, 0, :]}
-                language = batch['lang'][:, 0, :]
 
                 #loss, infos = self.model.loss(*batch)
                 # trajectories: torch.Size([256, 16, 69]) vs. torch.Size([32, 100, 14])
