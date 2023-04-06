@@ -501,7 +501,6 @@ class GaussianInvDynDiffusion(nn.Module):
         return loss, info
 
     def loss(self, x, cond, returns=None):
-        import pdb;pdb.set_trace()
         if self.train_only_inv:
             # Calculating inv loss
             x_t = x[:, :-1, self.action_dim:]
@@ -518,10 +517,8 @@ class GaussianInvDynDiffusion(nn.Module):
                 loss = F.mse_loss(pred_a_t, a_t)
                 info = {'a0_loss': loss}
         else:
-            import pdb;pdb.set_trace()
             batch_size = len(x)
             t = torch.randint(0, self.n_timesteps, (batch_size,), device=x.device).long()
-            import pdb;pdb.set_trace()
             diffuse_loss, info = self.p_losses(x[:, :, self.action_dim:], cond, t, returns)
             # Calculating inv loss
             x_t = x[:, :-1, self.action_dim:]
