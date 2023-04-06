@@ -486,7 +486,6 @@ class GaussianInvDynDiffusion(nn.Module):
         x_noisy = self.q_sample(x_start=x_start, t=t, noise=noise)
         x_noisy = apply_conditioning(x_noisy, cond, 0)
 
-        import pdb;pdb.set_trace()
         x_recon = self.model(x_noisy, cond, t, returns)
 
         if not self.predict_epsilon:
@@ -521,6 +520,7 @@ class GaussianInvDynDiffusion(nn.Module):
         else:
             batch_size = len(x)
             t = torch.randint(0, self.n_timesteps, (batch_size,), device=x.device).long()
+            import pdb;pdb.set_trace()
             diffuse_loss, info = self.p_losses(x[:, :, self.action_dim:], cond, t, returns)
             # Calculating inv loss
             x_t = x[:, :-1, self.action_dim:]
