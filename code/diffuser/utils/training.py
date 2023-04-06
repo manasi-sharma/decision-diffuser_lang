@@ -99,7 +99,9 @@ class Trainer(object):
         dataset: BaseLowdimDataset
         #dataset = hydra.utils.instantiate(cfg_task_dataset) #cfg.task.dataset)
         self.dataset = KitchenMjlLowdimDataset(**cfg_task_dataset)
+        import pdb;pdb.set_trace()
         self.dataloader = cycle(DataLoader(dataset, **cfg_dataloader)) #**cfg.dataloader)
+        import pdb;pdb.set_trace()
 
         # Create normalize
         #self.dataset_normalizer = self.dataset.get_normalizer()
@@ -135,12 +137,9 @@ class Trainer(object):
         timer = Timer()
         for step in range(n_train_steps):
             for i in range(self.gradient_accumulate_every):
-                import pdb;pdb.set_trace()
                 batch = next(self.dataloader)
-                import pdb;pdb.set_trace()
                 #batch = self.dataset_normalizer.normalize(batch)
                 batch = batch_to_device(batch, device=self.device)
-                import pdb;pdb.set_trace()
 
                 trajectories = np.concatenate([batch['action'], batch['observations']], axis=-1)
                 conditions = {0: batch['observations'][0]}
