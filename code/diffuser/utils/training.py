@@ -139,7 +139,6 @@ class Trainer(object):
                 #batch = self.dataset_normalizer.normalize(batch)
                 batch = batch_to_device(batch, device=self.device)
 
-                import pdb;pdb.set_trace()
                 trajectories = torch.concatenate([batch['action'], batch['obs']], axis=-1)
                 conditions = {0: batch['obs'][:, 0, :]}
                 language = batch['lang'][:, 0, :]
