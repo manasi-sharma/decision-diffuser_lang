@@ -99,6 +99,7 @@ class Trainer(object):
         self.dataset: BaseLowdimDataset
         #dataset = hydra.utils.instantiate(cfg_task_dataset) #cfg.task.dataset)
         self.dataset = KitchenMjlLowdimDataset(**cfg_task_dataset)
+        self.normalizer = self.dataset.get_normalizer()
         self.dataloader = cycle(DataLoader(self.dataset, **cfg_dataloader)) #**cfg.dataloader)
 
         # Create normalize
@@ -136,7 +137,7 @@ class Trainer(object):
         for step in range(n_train_steps):
             for i in range(self.gradient_accumulate_every):
                 batch = next(self.dataloader)
-                #batch = self.dataset_normalizer.normalize(batch)
+                batch = self.normalizer.normalize(batch)
                 batch = batch_to_device(batch, device=self.device)
 
                 trajectories = torch.concatenate([batch['action'], batch['obs']], axis=-1)
