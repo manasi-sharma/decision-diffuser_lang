@@ -486,7 +486,6 @@ class GaussianInvDynDiffusion(nn.Module):
         x_noisy = self.q_sample(x_start=x_start, t=t, noise=noise)
         x_noisy = apply_conditioning(x_noisy, cond, 0)
 
-        import pdb;pdb.set_trace()
         x_recon = self.model(x_noisy, cond, t, returns)
 
         if not self.predict_epsilon:
