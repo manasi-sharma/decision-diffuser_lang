@@ -148,6 +148,7 @@ class Trainer(object):
                 # trajectories: torch.Size([256, 16, 69]) vs. torch.Size([32, 100, 14])
                 # conditions: torch.Size([16, 60]) (from 0 of [256, 16, 69]) vs. torch.Size([32, 11])
                 # lang: torch.Size([256, 16, 384]) vs. torch.Size([32, 1])
+                import pdb;pdb.set_trace()
                 loss, infos = self.model.loss(trajectories, conditions, language)
                 loss = loss / self.gradient_accumulate_every
                 loss.backward()
