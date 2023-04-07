@@ -147,7 +147,8 @@ class Trainer(object):
                 # trajectories: torch.Size([256, 16, 69]) vs. torch.Size([32, 100, 14])
                 # conditions: torch.Size([16, 60]) (from 0 of [256, 16, 69]) vs. torch.Size([32, 11])
                 # lang: torch.Size([256, 16, 384]) vs. torch.Size([32, 1])
-                loss, infos = self.model.loss(trajectories, conditions, language)
+                #loss, infos = self.model.loss(trajectories, conditions, language)
+                loss, infos = self.model.loss(trajectories, conditions)
                 loss = loss / self.gradient_accumulate_every
                 loss.backward()
 
@@ -197,7 +198,8 @@ class Trainer(object):
         if self.save_checkpoints:
             savepath = os.path.join(savepath, f'state_{self.step}.pt')
         else:
-            savepath = os.path.join(savepath, 'state_lang.pt')
+            savepath = os.path.join(savepath, 'state.pt')
+            #savepath = os.path.join(savepath, 'state_lang.pt')
         torch.save(data, savepath)
         logger.print(f'[ utils/training ] Saved model to {savepath}')
 
@@ -205,7 +207,8 @@ class Trainer(object):
         '''
             loads model and ema from disk
         '''
-        loadpath = os.path.join(self.bucket, logger.prefix, f'checkpoint/state_lang.pt')
+        loadpath = os.path.join(self.bucket, logger.prefix, f'checkpoint/state.pt')
+        #loadpath = os.path.join(self.bucket, logger.prefix, f'checkpoint/state_lang.pt')
         # data = logger.load_torch(loadpath)
         data = torch.load(loadpath)
 
