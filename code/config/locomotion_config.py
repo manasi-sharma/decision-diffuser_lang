@@ -19,7 +19,7 @@ class Config(ParamsProto):
     loss_discount = 1
     predict_epsilon = True
     dim_mults = (1, 4, 8)
-    returns_condition = True
+    returns_condition = False #True
     calc_energy=False
     dim=128
     condition_dropout=0.25
@@ -43,9 +43,9 @@ class Config(ParamsProto):
     returns_scale = 400.0 # Determined using rewards from the dataset
 
     ## training
-    n_steps_per_epoch = 10000
+    n_steps_per_epoch = 1 #10000
     loss_type = 'l2'
-    n_train_steps = 1e6
+    n_train_steps = 2 #1e6
     batch_size = 32
     learning_rate = 2e-4
     gradient_accumulate_every = 2
