@@ -138,6 +138,7 @@ class Trainer(object):
             for i in range(self.gradient_accumulate_every):
                 batch = next(self.dataloader)
                 language = batch['lang'][:, 0, :]
+                language = language.to(self.device)
                 batch = self.normalizer.normalize(batch)
                 batch = batch_to_device(batch, device=self.device)
 
