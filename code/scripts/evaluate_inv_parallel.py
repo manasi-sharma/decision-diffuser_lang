@@ -1,3 +1,6 @@
+import sys
+sys.path.append('/iliad/u/manasis/decision-diffuser_lang/code/')
+
 import diffuser.utils as utils
 from ml_logger import logger
 import torch
