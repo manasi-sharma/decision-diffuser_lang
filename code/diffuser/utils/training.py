@@ -106,6 +106,7 @@ class Trainer(object):
         else:
             val_dataset = self.dataset.get_validation_dataset()
             self.dataloader = DataLoader(val_dataset, **cfg_valdataloader)
+        import pdb;pdb.set_trace()
         # Create normalize
         #self.dataset_normalizer = self.dataset.get_normalizer()
 
