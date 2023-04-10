@@ -9,6 +9,10 @@ from config.locomotion_config import Config
 from diffuser.utils.arrays import to_torch, to_np, to_device
 from diffuser.datasets.d4rl import suppress_output
 
+from diffuser.datasets.diffusionpolicy_datasets.base_dataset import BaseLowdimDataset
+from diffuser.datasets.diffusionpolicy_datasets.kitchen_mjl_lowdim_dataset import KitchenMjlLowdimDataset
+
+
 def evaluate(**deps):
     from ml_logger import logger, RUN
     from config.locomotion_config import Config
@@ -60,6 +64,16 @@ def evaluate(**deps):
     )
 
     dataset = dataset_config()
+    cfg_valdataloader = {'batch_size': 256, 'num_workers': 1, 'persistent_workers': False, 'pin_memory': True, 'shuffle': False}
+    cfg_task_dataset = {'abs_action': True, 'dataset_dir': 'data/kitchen/kitchen_demos_multitask', 'horizon': 16, 'pad_after': 7, 
+                        'pad_before': 1, 'robot_noise_ratio': 0.1, 'seed': 42, 'val_ratio': 0.02}
+
+    norm_dataset: BaseLowdimDataset
+    #dataset = hydra.utils.instantiate(cfg_task_dataset) #cfg.task.dataset)
+    norm_dataset = KitchenMjlLowdimDataset(**cfg_task_dataset)
+    normalizer = norm_dataset.get_normalizer()
+    """dataloader = cycle(DataLoader(self.dataset, **cfg_valdataloader)) #**cfg.dataloader)"""
+
     renderer = render_config()
 
     observation_dim = dataset.observation_dim
@@ -121,7 +135,8 @@ def evaluate(**deps):
 
     model = model_config()
     diffusion = diffusion_config(model)
-    trainer = trainer_config(diffusion, dataset, renderer)
+    trainer = trainer_config(diffusion, dataset, renderer, train_or_val='val')
+    """trainer = trainer_config(diffusion, dataset)"""
     logger.print(utils.report_parameters(model), color='green')
     trainer.step = state_dict['step']
     trainer.model.load_state_dict(state_dict['model'])
@@ -143,7 +158,9 @@ def evaluate(**deps):
     recorded_obs = [deepcopy(obs[:, None])]
 
     while sum(dones) <  num_eval:
-        obs = dataset.normalizer.normalize(obs, 'observations')
+        #obs = dataset.normalizer.normalize({'obs': obs})
+        obs = normalizer['obs'].normalize(obs)
+        #obs = dataset.normalizer.normalize(obs, 'observations')
         conditions = {0: to_torch(obs, device=device)}
         samples = trainer.ema_model.conditional_sample(conditions, returns=returns)
         obs_comb = torch.cat([samples[:, 0, :], samples[:, 1, :]], dim=-1)
@@ -153,13 +170,15 @@ def evaluate(**deps):
         samples = to_np(samples)
         action = to_np(action)
 
-        action = dataset.normalizer.unnormalize(action, 'actions')
+        #action = dataset.normalizer.unnormalize(action, 'actions')
+        action = normalizer['action'].unnormalize(action)
 
-        if t == 0:
+        """if t == 0:
             normed_observations = samples[:, :, :]
-            observations = dataset.normalizer.unnormalize(normed_observations, 'observations')
+            #observations = dataset.normalizer.unnormalize(normed_observations, 'observations')
+            #observations = dataset.normalizer['obs'].unnormalize(observations)
             savepath = os.path.join('images', 'sample-planned.png')
-            renderer.composite(savepath, observations)
+            renderer.composite(savepath, observations)"""
 
         obs_list = []
         for i in range(num_eval):
@@ -184,8 +203,11 @@ def evaluate(**deps):
 
     recorded_obs = np.concatenate(recorded_obs, axis=1)
     savepath = os.path.join('images', f'sample-executed.png')
-    renderer.composite(savepath, recorded_obs)
+    """renderer.composite(savepath, recorded_obs)"""
     episode_rewards = np.array(episode_rewards)
 
     logger.print(f"average_ep_reward: {np.mean(episode_rewards)}, std_ep_reward: {np.std(episode_rewards)}", color='green')
     logger.log_metrics_summary({'average_ep_reward':np.mean(episode_rewards), 'std_ep_reward':np.std(episode_rewards)})
+
+if __name__ == "__main__":
+    evaluate()

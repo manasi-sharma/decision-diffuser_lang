@@ -64,6 +64,7 @@ class Trainer(object):
         bucket=None,
         train_device='cuda',
         save_checkpoints=False,
+        train_or_val='train'
     ):
         super().__init__()
         self.model = diffusion_model
@@ -100,8 +101,11 @@ class Trainer(object):
         #dataset = hydra.utils.instantiate(cfg_task_dataset) #cfg.task.dataset)
         self.dataset = KitchenMjlLowdimDataset(**cfg_task_dataset)
         self.normalizer = self.dataset.get_normalizer()
-        self.dataloader = cycle(DataLoader(self.dataset, **cfg_dataloader)) #**cfg.dataloader)
-
+        if train_or_val:
+            self.dataloader = cycle(DataLoader(self.dataset, **cfg_dataloader)) #**cfg.dataloader)
+        else:
+            val_dataset = self.dataset.get_validation_dataset()
+            self.dataloader = DataLoader(val_dataset, **cfg_valdataloader)
         # Create normalize
         #self.dataset_normalizer = self.dataset.get_normalizer()
 
