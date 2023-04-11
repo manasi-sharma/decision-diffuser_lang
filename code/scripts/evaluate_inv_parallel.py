@@ -141,7 +141,6 @@ def evaluate(**deps):
     trainer = trainer_config(diffusion, dataset, renderer, train_or_val='val')
     logger.print(utils.report_parameters(model), color='green')
     trainer.step = state_dict['step']
-    import pdb;pdb.set_trace()
     trainer.model.load_state_dict(state_dict['model'])
     trainer.ema_model.load_state_dict(state_dict['ema'])
 
@@ -149,7 +148,6 @@ def evaluate(**deps):
     device = Config.device
 
     env_list = [gym.make(Config.dataset) for _ in range(num_eval)]
-    import pdb;pdb.set_trace()
     dones = [0 for _ in range(num_eval)]
     episode_rewards = [0 for _ in range(num_eval)]
 
@@ -158,6 +156,7 @@ def evaluate(**deps):
 
     t = 0
     obs_list = [env.reset()[None] for env in env_list]
+    import pdb;pdb.set_trace()
     obs = np.concatenate(obs_list, axis=0)
     recorded_obs = [deepcopy(obs[:, None])]
 
