@@ -142,6 +142,7 @@ def evaluate(**deps):
     """trainer = trainer_config(diffusion, dataset)"""
     logger.print(utils.report_parameters(model), color='green')
     trainer.step = state_dict['step']
+    import pdb;pdb.set_trace()
     trainer.model.load_state_dict(state_dict['model'])
     trainer.ema_model.load_state_dict(state_dict['ema'])
 
