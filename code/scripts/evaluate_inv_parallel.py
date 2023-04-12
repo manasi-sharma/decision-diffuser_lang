@@ -17,6 +17,8 @@ from diffuser.datasets.diffusionpolicy_datasets.kitchen_mjl_lowdim_dataset impor
 from diffuser.datasets.diffusionpolicy_datasets.kitchen_lowdim_wrapper import KitchenLowdimWrapper
 from diffuser.datasets.diffusionpolicy_datasets.v0 import KitchenAllV0
 
+from voltron import instantiate_extractor, load
+
 def evaluate(**deps):
     from ml_logger import logger, RUN
     from config.locomotion_config import Config
@@ -68,6 +70,8 @@ def evaluate(**deps):
     )
 
     dataset = dataset_config()
+
+    """Additional dataset configuration / langauge stuff"""
     cfg_valdataloader = {'batch_size': 256, 'num_workers': 1, 'persistent_workers': False, 'pin_memory': True, 'shuffle': False}
     cfg_task_dataset = {'abs_action': True, 'dataset_dir': 'data/kitchen/kitchen_demos_multitask', 'horizon': 16, 'pad_after': 7, 
                         'pad_before': 1, 'robot_noise_ratio': 0.1, 'seed': 42, 'val_ratio': 0.02}
@@ -77,6 +81,22 @@ def evaluate(**deps):
     norm_dataset = KitchenMjlLowdimDataset(**cfg_task_dataset)
     normalizer = norm_dataset.get_normalizer()
     """dataloader = cycle(DataLoader(self.dataset, **cfg_valdataloader)) #**cfg.dataloader)"""
+    
+    # phrase to sentence converter
+    p_to_s = {
+        'kettle': 'Move the kettle to the top burner',
+        'bottom burner': 'Turn the oven knob that activates the bottom burner', 
+        'hinge cabinet': 'Open the hinge cabinet',
+        'slide cabinet': 'Open the slide cabinet',
+        'light switch': 'Turn on the light switch',
+        'top burner': 'Turn the oven knob that activates the top burner',
+        'microwave': 'Open the microwave door',
+    }
+
+    # Loading in Language Encoder
+    vcond, preprocess = load("v-cond", device="cuda", freeze=True)
+    vector_extractor = instantiate_extractor(vcond)()
+    """End"""
 
     renderer = render_config()
 
@@ -155,6 +175,16 @@ def evaluate(**deps):
     episode_rewards = [0 for _ in range(num_eval)]
 
     assert trainer.ema_model.condition_guidance_w == Config.condition_guidance_w
+    
+    # Setting up the language returns
+    returns = []
+    for i in range(num_eval):
+        list_tasks = env_list[i].env.tasks_to_complete
+        subtasks_sentence_list = [p_to_s[subtask] for subtask in list_tasks]
+        subtasks_sentence = ', and '.join(subtasks_sentence_list).lower().capitalize()
+        multimodal_embeddings = vcond(subtasks_sentence, mode="multimodal")
+        representation = vector_extractor(multimodal_embeddings.cpu())
+        import pdb;pdb.set_trace()
     #returns = to_device(Config.test_ret * torch.ones(num_eval, 1), device)
 
     t = 0
