@@ -184,17 +184,19 @@ def evaluate(**deps):
         subtasks_sentence = ', and '.join(subtasks_sentence_list).lower().capitalize()
         multimodal_embeddings = vcond(subtasks_sentence, mode="multimodal")
         representation = vector_extractor(multimodal_embeddings.cpu())
-        import pdb;pdb.set_trace()
+        returns.append(representation)
+    returns = torch.cat(returns)
+    returns = to_device(returns, device)
     #returns = to_device(Config.test_ret * torch.ones(num_eval, 1), device)
 
     t = 0
     obs_list = [env.reset()[None] for env in env_list]
-    import pdb;pdb.set_trace()
     obs = np.concatenate(obs_list, axis=0)
     recorded_obs = [deepcopy(obs[:, None])]
 
     while sum(dones) <  num_eval:
         #obs = dataset.normalizer.normalize({'obs': obs})
+        import pdb;pdb.set_trace()
         obs = normalizer['obs'].normalize(obs)
         #obs = dataset.normalizer.normalize(obs, 'observations')
         conditions = {0: to_torch(obs, device=device)}
