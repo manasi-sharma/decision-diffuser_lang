@@ -237,6 +237,7 @@ def evaluate(**deps):
         obs = np.concatenate(obs_list, axis=0)
         recorded_obs.append(deepcopy(obs[:, None]))
         t += 1
+        import pdb;pdb.set_trace()
 
     recorded_obs = np.concatenate(recorded_obs, axis=1)
     savepath = os.path.join('images', f'sample-executed.png')
