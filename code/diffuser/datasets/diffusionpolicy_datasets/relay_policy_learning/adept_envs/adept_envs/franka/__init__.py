@@ -15,13 +15,12 @@
 # limitations under the License.
 
 from gym.envs.registration import register
-import gym
 
 # Relax the robot
-for env in gym.envs.registry.env_specs:
+for env in register.registry.env_specs:
     if 'kitchen_relax-v1' in env:
         print("Remove {} from registry".format(env))
-        del gym.registry.env_specs[env]
+        del register.registry.env_specs[env]
 
 register(
     id='kitchen_relax-v1',
