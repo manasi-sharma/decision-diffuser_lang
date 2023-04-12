@@ -204,11 +204,11 @@ def evaluate(**deps):
         obs_comb = obs_comb.reshape(-1, 2*observation_dim)
         action = trainer.ema_model.inv_model(obs_comb)
 
-        samples = to_np(samples)
-        action = to_np(action)
-
         #action = dataset.normalizer.unnormalize(action, 'actions')
         action = normalizer['action'].unnormalize(action)
+
+        samples = to_np(samples)
+        action = to_np(action)
 
         """if t == 0:
             normed_observations = samples[:, :, :]
