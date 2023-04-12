@@ -99,6 +99,7 @@ class KitchenV0(robot_env.RobotEnv):
             a = np.clip(a, -1.0, 1.0)
 
         if not self.initializing:
+            import pdb;pdb.set_trace()
             a = self.act_mid + a * self.act_amp  # mean center and scale
         else:
             self.goal = self._get_task_goal()  # update goal if init
