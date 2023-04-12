@@ -14,7 +14,8 @@ from diffuser.datasets.d4rl import suppress_output
 
 from diffuser.datasets.diffusionpolicy_datasets.base_dataset import BaseLowdimDataset
 from diffuser.datasets.diffusionpolicy_datasets.kitchen_mjl_lowdim_dataset import KitchenMjlLowdimDataset
-
+from diffuser.datasets.diffusionpolicy_datasets.kitchen_lowdim_wrapper import KitchenLowdimWrapper
+from diffuser.datasets.diffusionpolicy_datasets.v0 import KitchenAllV0
 
 def evaluate(**deps):
     from ml_logger import logger, RUN
@@ -67,7 +68,7 @@ def evaluate(**deps):
     )
 
     dataset = dataset_config()
-    """cfg_valdataloader = {'batch_size': 256, 'num_workers': 1, 'persistent_workers': False, 'pin_memory': True, 'shuffle': False}
+    cfg_valdataloader = {'batch_size': 256, 'num_workers': 1, 'persistent_workers': False, 'pin_memory': True, 'shuffle': False}
     cfg_task_dataset = {'abs_action': True, 'dataset_dir': 'data/kitchen/kitchen_demos_multitask', 'horizon': 16, 'pad_after': 7, 
                         'pad_before': 1, 'robot_noise_ratio': 0.1, 'seed': 42, 'val_ratio': 0.02}
 
@@ -75,7 +76,7 @@ def evaluate(**deps):
     #dataset = hydra.utils.instantiate(cfg_task_dataset) #cfg.task.dataset)
     norm_dataset = KitchenMjlLowdimDataset(**cfg_task_dataset)
     normalizer = norm_dataset.get_normalizer()
-    dataloader = cycle(DataLoader(self.dataset, **cfg_valdataloader)) #**cfg.dataloader)"""
+    """dataloader = cycle(DataLoader(self.dataset, **cfg_valdataloader)) #**cfg.dataloader)"""
 
     renderer = render_config()
 
@@ -147,12 +148,14 @@ def evaluate(**deps):
     num_eval = 10
     device = Config.device
 
-    env_list = [gym.make(Config.dataset) for _ in range(num_eval)]
+    # use abs_action=True
+    #env_list = [gym.make(Config.dataset) for _ in range(num_eval)]
+    env_list = [KitchenLowdimWrapper(KitchenAllV0(use_abs_action=True)) for _ in range(num_eval)]
     dones = [0 for _ in range(num_eval)]
     episode_rewards = [0 for _ in range(num_eval)]
 
     assert trainer.ema_model.condition_guidance_w == Config.condition_guidance_w
-    returns = to_device(Config.test_ret * torch.ones(num_eval, 1), device)
+    #returns = to_device(Config.test_ret * torch.ones(num_eval, 1), device)
 
     t = 0
     obs_list = [env.reset()[None] for env in env_list]
@@ -162,8 +165,8 @@ def evaluate(**deps):
 
     while sum(dones) <  num_eval:
         #obs = dataset.normalizer.normalize({'obs': obs})
-        #obs = normalizer['obs'].normalize(obs)
-        obs = dataset.normalizer.normalize(obs, 'observations')
+        obs = normalizer['obs'].normalize(obs)
+        #obs = dataset.normalizer.normalize(obs, 'observations')
         conditions = {0: to_torch(obs, device=device)}
         samples = trainer.ema_model.conditional_sample(conditions, returns=returns)
         obs_comb = torch.cat([samples[:, 0, :], samples[:, 1, :]], dim=-1)
@@ -173,8 +176,8 @@ def evaluate(**deps):
         samples = to_np(samples)
         action = to_np(action)
 
-        action = dataset.normalizer.unnormalize(action, 'actions')
-        #action = normalizer['action'].unnormalize(action)
+        #action = dataset.normalizer.unnormalize(action, 'actions')
+        action = normalizer['action'].unnormalize(action)
 
         """if t == 0:
             normed_observations = samples[:, :, :]
