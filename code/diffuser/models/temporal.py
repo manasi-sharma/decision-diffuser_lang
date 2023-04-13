@@ -160,7 +160,7 @@ class TemporalUnet(nn.Module):
         else:
             embed_dim = dim
         
-        self.multihead_attn = nn.MultiheadAttention(embed_dim=dim, num_heads=4, batch_first=True)
+        self.multihead_attn = nn.MultiheadAttention(embed_dim=1, num_heads=1, batch_first=True, device=torch.device('cuda:0'))
 
         self.downs = nn.ModuleList([])
         self.ups = nn.ModuleList([])
@@ -220,11 +220,12 @@ class TemporalUnet(nn.Module):
                 returns_embed = mask*returns_embed
             if force_dropout:
                 returns_embed = 0*returns_embed
-            import pdb;pdb.set_trace()
+            
+            #import pdb;pdb.set_trace()
             t_reshaped = t.reshape(t.shape[0], t.shape[1], 1)
             returns_embed_reshaped = returns_embed.reshape(returns_embed.shape[0], returns_embed.shape[1], 1)
             attn_output, attn_output_weights = self.multihead_attn(query=t_reshaped, key=returns_embed_reshaped, value=returns_embed_reshaped)
-            t = attn_output.squeeze(0).to(returns_embed.device)
+            t = attn_output.squeeze()
             #t = torch.cat([t, returns_embed], dim=-1)
 
         h = []
@@ -277,7 +278,12 @@ class TemporalUnet(nn.Module):
                 returns_embed = mask*returns_embed
             if force_dropout:
                 returns_embed = 0*returns_embed
-            t = torch.cat([t, returns_embed], dim=-1)
+            
+            t_reshaped = t.reshape(t.shape[0], t.shape[1], 1)
+            returns_embed_reshaped = returns_embed.reshape(returns_embed.shape[0], returns_embed.shape[1], 1)
+            attn_output, attn_output_weights = self.multihead_attn(query=t_reshaped, key=returns_embed_reshaped, value=returns_embed_reshaped)
+            t = attn_output.squeeze()
+            #t = torch.cat([t, returns_embed], dim=-1)
 
         h = []
 
