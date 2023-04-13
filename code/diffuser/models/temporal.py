@@ -11,6 +11,7 @@ from .helpers import (
     Downsample1d,
     Upsample1d,
     Conv1dBlock,
+    CrossAttention,
 )
 
 class Residual(nn.Module):
@@ -222,6 +223,7 @@ class TemporalUnet(nn.Module):
         h = []
 
         for resnet, resnet2, downsample in self.downs:
+        #for resnet, resnet2, attn, downsample in self.downs:
             x = resnet(x, t)
             x = resnet2(x, t)
             h.append(x)
@@ -233,6 +235,7 @@ class TemporalUnet(nn.Module):
         # import pdb; pdb.set_trace()
 
         for resnet, resnet2, upsample in self.ups:
+        #for resnet, resnet2, attn, upsample in self.ups:
             x = torch.cat((x, h.pop()), dim=1)
             x = resnet(x, t)
             x = resnet2(x, t)

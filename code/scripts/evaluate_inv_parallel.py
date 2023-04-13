@@ -199,7 +199,7 @@ def evaluate(**deps):
         obs = normalizer['obs'].normalize(obs)
         #obs = dataset.normalizer.normalize(obs, 'observations')
         conditions = {0: to_torch(obs, device=device)}
-        samples = trainer.ema_model.conditional_sample(conditions, returns=returns)
+        samples = trainer.ema_model.conditional_sample(conditions, returns=returns, verbose=False)
         obs_comb = torch.cat([samples[:, 0, :], samples[:, 1, :]], dim=-1)
         obs_comb = obs_comb.reshape(-1, 2*observation_dim)
         action = trainer.ema_model.inv_model(obs_comb)

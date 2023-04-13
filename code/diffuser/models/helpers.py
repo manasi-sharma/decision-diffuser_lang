@@ -188,3 +188,72 @@ Losses = {
     'value_l1': ValueL1,
     'value_l2': ValueL2,
 }
+
+#-----------------------------------------------------------------------------#
+#---------------------------------- attention --------------------------------#
+#-----------------------------------------------------------------------------#
+
+class LayerNorm(nn.Module):
+    def __init__(self, dim, eps=1e-5):
+        super().__init__()
+        self.eps = eps
+        self.g = nn.Parameter(torch.ones(1, dim, 1))
+        self.b = nn.Parameter(torch.zeros(1, dim, 1))
+
+    def forward(self, x):
+        var = torch.var(x, dim=1, unbiased=False, keepdim=True)
+        mean = torch.mean(x, dim=1, keepdim=True)
+        return (x - mean) / (var + self.eps).sqrt() * self.g + self.b
+    
+
+class CrossAttention(nn.Module):  # replace with regular cross attention
+    def __init__(
+        self,
+        query_dim,
+        cross_attention_dim=None,
+        heads=4,
+        dim_head=32,
+        bias=False,
+        dropout=0,
+    ):
+        super().__init__()
+        cross_attention_dim = (
+            cross_attention_dim if cross_attention_dim is not None else query_dim
+        )
+        self.scale = dim_head**-0.5
+        self.heads = heads
+        self.query_dim = query_dim
+
+        hidden_dim = dim_head * heads
+
+        self.norm = LayerNorm(query_dim)
+        self.to_q = nn.Linear(query_dim, hidden_dim, bias=bias)
+        self.to_k = nn.Linear(cross_attention_dim, hidden_dim, bias=bias)
+        self.to_v = nn.Linear(cross_attention_dim, hidden_dim, bias=bias)
+
+        self.to_out = nn.Conv1d(hidden_dim, query_dim, 1)
+        self.dropout = nn.Dropout(p=dropout) if dropout else nn.Identity()
+
+    def forward(self, x, context=None):
+        og_x = x
+        x = self.norm(x)
+        x = x.permute(0, 2, 1)
+        q = self.to_q(x)
+        context = context if context is not None else x
+        k = self.to_k(context)
+        v = self.to_v(context)
+
+        q, k, v = map(lambda t: einops.rearrange(t.permute(0, 2, 1), "b (h c) d -> b h c d", h=self.heads), (q, k, v))  # type: ignore
+
+        # b = batch
+        # h = heads
+        # c = channels
+        # d = number of queries
+        # e = number of key/values
+        qk = (torch.einsum("b h c d, b h c e -> b h d e", q, k) * self.scale).softmax(
+            dim=-1
+        )
+
+        out = torch.einsum("b h d e, b h c e -> b h c d", qk, v)
+        out = einops.rearrange(out, "b h c d -> b (h c) d")
+        return self.dropout(self.to_out(out) + og_x)
