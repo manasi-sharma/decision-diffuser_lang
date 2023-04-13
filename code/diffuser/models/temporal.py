@@ -156,7 +156,8 @@ class TemporalUnet(nn.Module):
                         nn.Linear(dim * 4, dim),
                     )
             self.mask_dist = Bernoulli(probs=1-self.condition_dropout)
-            embed_dim = 2*dim
+            #embed_dim = 2*dim
+            embed_dim = dim
         else:
             embed_dim = dim
         
@@ -221,12 +222,12 @@ class TemporalUnet(nn.Module):
             if force_dropout:
                 returns_embed = 0*returns_embed
             
-            import pdb;pdb.set_trace()
+            #import pdb;pdb.set_trace()
             t_reshaped = t.reshape(t.shape[0], t.shape[1], 1)
             returns_embed_reshaped = returns_embed.reshape(returns_embed.shape[0], returns_embed.shape[1], 1)
             attn_output, attn_output_weights = self.multihead_attn(query=t_reshaped, key=returns_embed_reshaped, value=returns_embed_reshaped)
             t = attn_output.squeeze()
-            t = torch.cat([t, returns_embed], dim=-1)
+            #t = torch.cat([t, returns_embed], dim=-1)
 
         h = []
 
@@ -279,12 +280,12 @@ class TemporalUnet(nn.Module):
             if force_dropout:
                 returns_embed = 0*returns_embed
             
-            import pdb;pdb.set_trace()
+            #import pdb;pdb.set_trace()
             t_reshaped = t.reshape(t.shape[0], t.shape[1], 1)
             returns_embed_reshaped = returns_embed.reshape(returns_embed.shape[0], returns_embed.shape[1], 1)
             attn_output, attn_output_weights = self.multihead_attn(query=t_reshaped, key=returns_embed_reshaped, value=returns_embed_reshaped)
             t = attn_output.squeeze()
-            t = torch.cat([t, returns_embed], dim=-1)
+            #t = torch.cat([t, returns_embed], dim=-1)
 
         h = []
 
