@@ -195,6 +195,7 @@ def evaluate(**deps):
     recorded_obs = [deepcopy(obs[:, None])]
 
     while sum(dones) <  num_eval:
+        print("\n\nSum dones: ", sum(dones))
         #obs = dataset.normalizer.normalize({'obs': obs})
         obs = normalizer['obs'].normalize(obs)
         #obs = dataset.normalizer.normalize(obs, 'observations')
@@ -233,7 +234,6 @@ def evaluate(**deps):
                     pass
                 else:
                     episode_rewards[i] += this_reward
-            import pdb;pdb.set_trace()
 
         obs = np.concatenate(obs_list, axis=0)
         recorded_obs.append(deepcopy(obs[:, None]))
