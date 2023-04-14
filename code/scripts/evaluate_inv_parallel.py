@@ -233,6 +233,7 @@ def evaluate(**deps):
                     pass
                 else:
                     episode_rewards[i] += this_reward
+            import pdb;pdb.set_trace()
 
         obs = np.concatenate(obs_list, axis=0)
         recorded_obs.append(deepcopy(obs[:, None]))

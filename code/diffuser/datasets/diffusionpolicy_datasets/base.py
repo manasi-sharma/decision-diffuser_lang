@@ -45,8 +45,8 @@ class KitchenBase(KitchenTaskRelaxV1):
         "kettle",
     ]
     REMOVE_TASKS_WHEN_COMPLETE = True
-    TERMINATE_ON_TASK_COMPLETE = True
-    TERMINATE_ON_WRONG_COMPLETE = False
+    TERMINATE_ON_TASK_COMPLETE = False #True
+    TERMINATE_ON_WRONG_COMPLETE = True #False
     COMPLETE_IN_ANY_ORDER = (
         True  # This allows for the tasks to be completed in arbitrary order.
     )
