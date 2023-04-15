@@ -196,12 +196,13 @@ def evaluate(**deps):
         list_tasks = env_list[i].env.tasks_to_complete
         subtasks_sentence_list = [p_to_s[subtask] for subtask in list_tasks]
         subtasks_sentence = ', and '.join(subtasks_sentence_list).lower().capitalize()
-        import pdb;pdb.set_trace()
+        #import pdb;pdb.set_trace()
         multimodal_embeddings = vcond(subtasks_sentence, mode="multimodal")
         representation = vector_extractor(multimodal_embeddings.cpu())
         returns.append(representation)
     returns = torch.cat(returns)
     returns = to_device(returns, device)
+    returns=None
     #returns = to_device(Config.test_ret * torch.ones(num_eval, 1), device)
 
     t = 0
