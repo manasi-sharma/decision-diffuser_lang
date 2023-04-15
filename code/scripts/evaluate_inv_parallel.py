@@ -169,8 +169,10 @@ def evaluate(**deps):
     device = Config.device
 
     # use abs_action=True
-    #env_list = [gym.make(Config.dataset) for _ in range(num_eval)]
-    env_list = [KitchenLowdimWrapper(KitchenAllV0(use_abs_action=True)) for _ in range(num_eval)]
+    env_list = [gym.make(Config.dataset) for _ in range(num_eval)]
+    import pdb;pdb.set_trace()
+    
+    #env_list = [KitchenLowdimWrapper(KitchenAllV0(use_abs_action=True)) for _ in range(num_eval)]
     dones = [0 for _ in range(num_eval)]
     episode_rewards = [0 for _ in range(num_eval)]
 
