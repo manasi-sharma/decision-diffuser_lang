@@ -17,6 +17,8 @@ from diffuser.datasets.diffusionpolicy_datasets.kitchen_mjl_lowdim_dataset impor
 from diffuser.datasets.diffusionpolicy_datasets.kitchen_lowdim_wrapper import KitchenLowdimWrapper
 from diffuser.datasets.diffusionpolicy_datasets.v0 import KitchenAllV0
 
+import re
+
 from voltron import instantiate_extractor, load
 
 def evaluate(**deps):
@@ -84,13 +86,16 @@ def evaluate(**deps):
     
     # phrase to sentence converter
     p_to_s = {
-        'kettle': 'Move the kettle to the top burner',
-        'bottom burner': 'Turn the oven knob that activates the bottom burner', 
-        'hinge cabinet': 'Open the hinge cabinet',
-        'slide cabinet': 'Open the slide cabinet',
-        'light switch': 'Turn on the light switch',
-        'top burner': 'Turn the oven knob that activates the top burner',
-        'microwave': 'Open the microwave door',
+        'Kettle': 'Move the kettle to the top burner',
+        'BottomBurner': 'Turn the oven knob that activates the bottom burner', 
+        'HingeCabinet': 'Open the hinge cabinet',
+        'SlideCabinet': 'Open the slide cabinet',
+        #'light switch': 'Turn on the light switch',
+        'Light': 'Turn on the light switch',
+        'TopBurner': 'Turn the oven knob that activates the top burner',
+        #'top burner': 'Turn the oven knob that activates the top burner',
+        'Microwave': 'Open the microwave door',
+        #'microwave': 'Open the microwave door',
     }
 
     # Loading in Language Encoder
@@ -171,17 +176,26 @@ def evaluate(**deps):
     # use abs_action=True
     env_list = [gym.make(Config.dataset) for _ in range(num_eval)]
     import pdb;pdb.set_trace()
-    
-    #env_list = [KitchenLowdimWrapper(KitchenAllV0(use_abs_action=True)) for _ in range(num_eval)]
+
+    env_list = [KitchenLowdimWrapper(KitchenAllV0(use_abs_action=True)) for _ in range(num_eval)]
+    import pdb;pdb.set_trace()
     dones = [0 for _ in range(num_eval)]
     episode_rewards = [0 for _ in range(num_eval)]
 
     assert trainer.ema_model.condition_guidance_w == Config.condition_guidance_w
+
+    # language list of tasks
+    list_tasks = ['Kitchen', 'Microwave', 'Kettle', 'BottomBurner', 'Light']
     
     # Setting up the language returns
     returns = []
     for i in range(num_eval):
-        list_tasks = env_list[i].env.tasks_to_complete
+        """list_tasks = str(env_list[i])
+        list_tasks = re.search('<TimeLimit<(.*)<kitchen-mixed-v0>>>', list_tasks)
+        list_tasks = list_tasks.group(1)
+        list_tasks = re.findall('[A-Z][^A-Z]*', list_tasks)"""
+
+        #list_tasks = env_list[i].env.tasks_to_complete
         subtasks_sentence_list = [p_to_s[subtask] for subtask in list_tasks]
         subtasks_sentence = ', and '.join(subtasks_sentence_list).lower().capitalize()
         multimodal_embeddings = vcond(subtasks_sentence, mode="multimodal")
