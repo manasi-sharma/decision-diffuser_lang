@@ -83,7 +83,7 @@ class Trainer(object):
         self.batch_size = train_batch_size
         self.gradient_accumulate_every = gradient_accumulate_every
 
-        #self.dataset = dataset
+        self.dataset = dataset
 
         # Actual load in of data from directories
         """self.dataloader = cycle(torch.utils.data.DataLoader(
