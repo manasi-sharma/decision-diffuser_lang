@@ -29,8 +29,17 @@ class SequenceDataset(torch.utils.data.Dataset):
         itr = sequence_dataset(env, self.preprocess_fn)
 
         fields = ReplayBuffer(max_n_episodes, max_path_length, termination_penalty)
+        goal_state = np.array([ 0.  ,  0.  ,  0.  ,  0.  ,  0.  ,  0.  ,  0.  ,  0.  ,  0.  ,
+        0.  ,  0.  , -0.88, -0.01,  0.  ,  0.  ,  0.  ,  0.  , -0.69,
+       -0.05,  0.  ,  0.  ,  0.  , -0.75, -0.23,  0.75,  1.62,  0.99,
+        0.  ,  0.  , -0.06])
         for i, episode in enumerate(itr):
-            import pdb;pdb.set_trace()
+            tmp = np.unique(episode['observations'][:, 30:], axis=0).squeeze()
+            if len(tmp) != 30:
+                import pdb;pdb.set_trace()
+            else:
+                if not np.allclose(tmp, goal_state):
+                    import pdb;pdb.set_trace()
             fields.add_path(episode)
         fields.finalize()
 
