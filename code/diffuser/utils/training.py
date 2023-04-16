@@ -86,10 +86,10 @@ class Trainer(object):
         self.dataset = dataset
 
         # Actual load in of data from directories
-        """self.dataloader = cycle(torch.utils.data.DataLoader(
+        self.dataloader_decdiff = cycle(torch.utils.data.DataLoader(
             self.dataset, batch_size=train_batch_size, num_workers=0, shuffle=True, pin_memory=True
         ))
-        self.dataloader_vis = cycle(torch.utils.data.DataLoader(
+        """self.dataloader_vis = cycle(torch.utils.data.DataLoader(
             self.dataset, batch_size=1, num_workers=0, shuffle=True, pin_memory=True
         ))"""
         cfg_dataloader = {'batch_size': 256, 'num_workers': 1, 'persistent_workers': False, 'pin_memory': True, 'shuffle': True}
