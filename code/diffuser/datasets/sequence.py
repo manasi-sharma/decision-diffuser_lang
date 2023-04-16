@@ -40,7 +40,6 @@ class SequenceDataset(torch.utils.data.Dataset):
             else:
                 if not np.allclose(tmp, goal_state):
                     import pdb;pdb.set_trace()
-            print("len: ", len(tmp))
             fields.add_path(episode)
         fields.finalize()
 
@@ -55,6 +54,7 @@ class SequenceDataset(torch.utils.data.Dataset):
         self.normalize()
 
         print(fields)
+        import pdb;pdb.set_trace()
         # shapes = {key: val.shape for key, val in self.fields.items()}
         # print(f'[ datasets/mujoco ] Dataset fields: {shapes}')
 
