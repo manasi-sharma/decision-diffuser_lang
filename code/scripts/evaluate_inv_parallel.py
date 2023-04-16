@@ -19,6 +19,8 @@ from diffuser.datasets.diffusionpolicy_datasets.v0 import KitchenAllV0
 
 import re
 
+from time import time
+
 from voltron import instantiate_extractor, load
 
 def evaluate(**deps):
@@ -211,6 +213,8 @@ def evaluate(**deps):
     recorded_obs = [deepcopy(obs[:, None])]
 
     while sum(dones) <  num_eval:
+        t1 = time()
+        
         print("\n\nSum dones: ", sum(dones))
         #obs = dataset.normalizer.normalize({'obs': obs})
         obs = normalizer['obs'].normalize(obs)
@@ -250,7 +254,9 @@ def evaluate(**deps):
                     pass
                 else:
                     episode_rewards[i] += this_reward
-
+        
+        print("\n\nTime for 1 eval run: ", time()-t1)
+        
         obs = np.concatenate(obs_list, axis=0)
         recorded_obs.append(deepcopy(obs[:, None]))
         t += 1
