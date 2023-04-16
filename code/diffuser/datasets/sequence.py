@@ -40,6 +40,7 @@ class SequenceDataset(torch.utils.data.Dataset):
             else:
                 if not np.allclose(tmp, goal_state):
                     import pdb;pdb.set_trace()
+            print("len: ", len(tmp))
             fields.add_path(episode)
         fields.finalize()
 
