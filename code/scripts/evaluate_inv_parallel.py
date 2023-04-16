@@ -215,7 +215,6 @@ def evaluate(**deps):
     while sum(dones) <  num_eval:
         #t1 = time()
         
-        print("\n\nSum dones: ", sum(dones))
         #obs = dataset.normalizer.normalize({'obs': obs})
         obs = normalizer['obs'].normalize(obs)
         #obs = dataset.normalizer.normalize(obs, 'observations')

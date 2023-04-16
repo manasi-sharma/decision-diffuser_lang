@@ -68,6 +68,7 @@ def sequence_dataset(env, preprocess_fn):
             terminals
     """
     dataset = get_dataset(env)
+    import pdb;pdb.set_trace()
     dataset = preprocess_fn(dataset)
 
     N = dataset['rewards'].shape[0]
