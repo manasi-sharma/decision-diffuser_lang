@@ -8,6 +8,15 @@ from .d4rl import load_environment, sequence_dataset
 from .normalization import DatasetNormalizer
 from .buffer import ReplayBuffer
 
+from diffuser.datasets.diffusionpolicy_datasets.base_dataset import BaseLowdimDataset
+from torch.utils.data import DataLoader
+from diffuser.datasets.diffusionpolicy_datasets.kitchen_mjl_lowdim_dataset import KitchenMjlLowdimDataset
+
+def cycle(dl):
+    while True:
+        for data in dl:
+            yield data
+
 RewardBatch = namedtuple('Batch', 'trajectories conditions returns')
 Batch = namedtuple('Batch', 'trajectories conditions')
 ValueBatch = namedtuple('ValueBatch', 'trajectories conditions values')
@@ -26,7 +35,15 @@ class SequenceDataset(torch.utils.data.Dataset):
         self.discounts = self.discount ** np.arange(self.max_path_length)[:, None]
         self.use_padding = use_padding
         self.include_returns = include_returns
-        itr = sequence_dataset(env, self.preprocess_fn)
+        old_itr = sequence_dataset(env, self.preprocess_fn)
+
+        # Diffusion policy loader
+        cfg_dataloader = {'batch_size': 1, 'num_workers': 1, 'persistent_workers': False, 'pin_memory': True, 'shuffle': True}
+        cfg_task_dataset = {'abs_action': True, 'dataset_dir': 'data/kitchen/kitchen_demos_multitask', 'horizon': 280, 'pad_after': 7, 
+                            'pad_before': 1, 'robot_noise_ratio': 0.1, 'seed': 42, 'val_ratio': 0.02}
+        self.dataset_: BaseLowdimDataset
+        self.dataset_ = KitchenMjlLowdimDataset(**cfg_task_dataset)
+        itr = cycle(DataLoader(self.dataset_, **cfg_dataloader)) #**cfg.dataloader)
 
         fields = ReplayBuffer(max_n_episodes, max_path_length, termination_penalty)
         """goal_state = np.array([ 0.  ,  0.  ,  0.  ,  0.  ,  0.  ,  0.  ,  0.  ,  0.  ,  0.  ,
