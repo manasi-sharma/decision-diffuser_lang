@@ -107,7 +107,10 @@ class Trainer(object):
         else:
             val_dataset = self.dataset.get_validation_dataset()
             self.dataloader = cycle(DataLoader(val_dataset, **cfg_valdataloader))"""
-        import pdb;pdb.set_trace()
+        for i, batch in enumerate(self.dataloader):
+            import pdb;pdb.set_trace()
+            pass
+        
         # Create normalize
         #self.dataset_normalizer = self.dataset.get_normalizer()
 
