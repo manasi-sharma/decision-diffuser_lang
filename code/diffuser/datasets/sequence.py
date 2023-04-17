@@ -66,6 +66,7 @@ class SequenceDataset(torch.utils.data.Dataset):
         self.normalize()
 
         print(fields)
+        import pdb;pdb.set_trace()
         # shapes = {key: val.shape for key, val in self.fields.items()}
         # print(f'[ datasets/mujoco ] Dataset fields: {shapes}')
 
@@ -155,7 +156,6 @@ class CondSequenceDataset(torch.utils.data.Dataset):
         self.normalize()
 
         print(fields)
-        import pdb;pdb.set_trace()
         # shapes = {key: val.shape for key, val in self.fields.items()}
         # print(f'[ datasets/mujoco ] Dataset fields: {shapes}')
 
