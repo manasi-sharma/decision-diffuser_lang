@@ -114,7 +114,6 @@ class KitchenMjlLowdimDataset(BaseLowdimDataset):
         self.horizon = horizon
         self.pad_before = pad_before
         self.pad_after = pad_after
-        import pdb;pdb.set_trace()
         
     def get_validation_dataset(self):
         val_set = copy.copy(self)
