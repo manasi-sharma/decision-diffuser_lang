@@ -92,7 +92,7 @@ class Trainer(object):
         """self.dataloader_vis = cycle(torch.utils.data.DataLoader(
             self.dataset, batch_size=1, num_workers=0, shuffle=True, pin_memory=True
         ))"""
-        cfg_dataloader = {'batch_size': 256, 'num_workers': 1, 'persistent_workers': False, 'pin_memory': True, 'shuffle': True}
+        cfg_dataloader = {'batch_size': 1, 'num_workers': 1, 'persistent_workers': False, 'pin_memory': True, 'shuffle': True}
         cfg_valdataloader = {'batch_size': 256, 'num_workers': 1, 'persistent_workers': False, 'pin_memory': True, 'shuffle': False}
         cfg_task_dataset = {'abs_action': True, 'dataset_dir': 'data/kitchen/kitchen_demos_multitask', 'horizon': 280, 'pad_after': 7, 
                             'pad_before': 1, 'robot_noise_ratio': 0.1, 'seed': 42, 'val_ratio': 0.02}
