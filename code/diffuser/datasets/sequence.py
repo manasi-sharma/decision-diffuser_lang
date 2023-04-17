@@ -43,7 +43,7 @@ class SequenceDataset(torch.utils.data.Dataset):
                             'pad_before': 1, 'robot_noise_ratio': 0.1, 'seed': 42, 'val_ratio': 0.02}
         self.dataset_: BaseLowdimDataset
         self.dataset_ = KitchenMjlLowdimDataset(**cfg_task_dataset)
-        itr = cycle(DataLoader(self.dataset_, **cfg_dataloader)) #**cfg.dataloader)
+        itr = DataLoader(self.dataset_, **cfg_dataloader)
 
         import pdb;pdb.set_trace()
         fields = ReplayBuffer(max_n_episodes, max_path_length, termination_penalty)
