@@ -147,6 +147,7 @@ class KitchenMjlLowdimDataset(BaseLowdimDataset):
 
     def __getitem__(self, idx: int) -> Dict[str, torch.Tensor]:
         sample = self.sampler.sample_sequence(idx)
+        import pdb;pdb.set_trace()
         data = sample
 
         torch_data = dict_apply(data, torch.from_numpy)
