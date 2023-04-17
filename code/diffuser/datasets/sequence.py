@@ -51,7 +51,6 @@ class SequenceDataset(torch.utils.data.Dataset):
             new_episode['observations'] = episode['obs'].squeeze()
             new_episode['actions'] = episode['action'].squeeze()
             new_episode['lang'] = episode['lang'].squeeze()
-            
             fields.add_path(new_episode)
             #fields.add_path(episode)
         fields.finalize()
