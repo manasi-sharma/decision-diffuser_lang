@@ -51,15 +51,13 @@ class SequenceDataset(torch.utils.data.Dataset):
        -0.05,  0.  ,  0.  ,  0.  , -0.75, -0.23,  0.75,  1.62,  0.99,
         0.  ,  0.  , -0.06])"""
         for i, episode in enumerate(itr):
-            """tmp = np.unique(episode['observations'][:, 30:], axis=0).squeeze()
-            if len(tmp) != 30:
-                import pdb;pdb.set_trace()
-            else:
-                if not np.allclose(tmp, goal_state):
-                    import pdb;pdb.set_trace()"""
-            import pdb;pdb.set_trace()
-            fields.add_path(episode)
+            new_episode = {}
+            new_episode['observations'] = episode['obs'].squeeze()
+            new_episode['actions'] = episode['actions'].squeeze()
+            new_episode['lang'] = episode['lang'].squeeze()
+            fields.add_path(new_episode)
         fields.finalize()
+        import pdb;pdb.set_trace()
 
         self.normalizer = DatasetNormalizer(fields, normalizer, path_lengths=fields['path_lengths'])
         self.indices = self.make_indices(fields.path_lengths, horizon)
@@ -255,3 +253,11 @@ class ValueDataset(SequenceDataset):
         value = np.array([value], dtype=np.float32)
         value_batch = ValueBatch(*batch, value)
         return value_batch
+
+
+"""tmp = np.unique(episode['observations'][:, 30:], axis=0).squeeze()
+            if len(tmp) != 30:
+                import pdb;pdb.set_trace()
+            else:
+                if not np.allclose(tmp, goal_state):
+                    import pdb;pdb.set_trace()"""
