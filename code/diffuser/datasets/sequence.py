@@ -45,7 +45,6 @@ class SequenceDataset(torch.utils.data.Dataset):
         self.dataset_ = KitchenMjlLowdimDataset(**cfg_task_dataset)
         itr = DataLoader(self.dataset_, **cfg_dataloader)
 
-        import pdb;pdb.set_trace()
         fields = ReplayBuffer(max_n_episodes, max_path_length, termination_penalty)
         for i, episode in enumerate(itr):
             new_episode = {}
@@ -55,7 +54,6 @@ class SequenceDataset(torch.utils.data.Dataset):
             fields.add_path(new_episode)
             #fields.add_path(episode)
         fields.finalize()
-        import pdb;pdb.set_trace()
 
         self.normalizer = DatasetNormalizer(fields, normalizer, path_lengths=fields['path_lengths'])
         self.indices = self.make_indices(fields.path_lengths, horizon)

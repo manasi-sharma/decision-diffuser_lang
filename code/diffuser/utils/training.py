@@ -86,12 +86,14 @@ class Trainer(object):
         self.dataset = dataset
 
         # Actual load in of data from directories
-        self.dataloader_decdiff = cycle(torch.utils.data.DataLoader(
+        self.dataloader = cycle(torch.utils.data.DataLoader(
             self.dataset, batch_size=train_batch_size, num_workers=0, shuffle=True, pin_memory=True
         ))
+        import pdb;pdb.set_trace()
+
         """self.dataloader_vis = cycle(torch.utils.data.DataLoader(
             self.dataset, batch_size=1, num_workers=0, shuffle=True, pin_memory=True
-        ))"""
+        ))
         cfg_dataloader = {'batch_size': 1, 'num_workers': 1, 'persistent_workers': False, 'pin_memory': True, 'shuffle': True}
         cfg_valdataloader = {'batch_size': 256, 'num_workers': 1, 'persistent_workers': False, 'pin_memory': True, 'shuffle': False}
         cfg_task_dataset = {'abs_action': True, 'dataset_dir': 'data/kitchen/kitchen_demos_multitask', 'horizon': 280, 'pad_after': 7, 
@@ -102,14 +104,14 @@ class Trainer(object):
         self.dataset = KitchenMjlLowdimDataset(**cfg_task_dataset)
         self.normalizer = self.dataset.get_normalizer()
         self.dataloader = cycle(DataLoader(self.dataset, **cfg_dataloader)) #**cfg.dataloader)
-        """if train_or_val:
+        if train_or_val:
             self.dataloader = cycle(DataLoader(self.dataset, **cfg_dataloader)) #**cfg.dataloader)
         else:
             val_dataset = self.dataset.get_validation_dataset()
-            self.dataloader = cycle(DataLoader(val_dataset, **cfg_valdataloader))"""
+            self.dataloader = cycle(DataLoader(val_dataset, **cfg_valdataloader))
         for i, batch in enumerate(self.dataloader):
             import pdb;pdb.set_trace()
-            pass
+            pass"""
         
         # Create normalize
         #self.dataset_normalizer = self.dataset.get_normalizer()
