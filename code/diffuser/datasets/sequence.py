@@ -35,7 +35,7 @@ class SequenceDataset(torch.utils.data.Dataset):
         self.discounts = self.discount ** np.arange(self.max_path_length)[:, None]
         self.use_padding = use_padding
         self.include_returns = include_returns
-        #itr = sequence_dataset(env, self.preprocess_fn)
+        old_itr = sequence_dataset(env, self.preprocess_fn)
 
         # Diffusion policy loader
         cfg_dataloader = {'batch_size': 1, 'num_workers': 1, 'persistent_workers': False, 'pin_memory': True, 'shuffle': True}
@@ -45,6 +45,7 @@ class SequenceDataset(torch.utils.data.Dataset):
         self.dataset_ = KitchenMjlLowdimDataset(**cfg_task_dataset)
         itr = cycle(DataLoader(self.dataset_, **cfg_dataloader)) #**cfg.dataloader)
 
+        import pdb;pdb.set_trace()
         fields = ReplayBuffer(max_n_episodes, max_path_length, termination_penalty)
         for i, episode in enumerate(itr):
             new_episode = {}
