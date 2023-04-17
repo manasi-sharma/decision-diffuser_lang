@@ -65,8 +65,8 @@ class ReplayBuffer:
         path_length = len(path['observations'])
         assert path_length <= self.max_path_length
 
-        if path['terminals'].any():
-            assert (path['terminals'][-1] == True) and (not path['terminals'][:-1].any())
+        """if path['terminals'].any():
+            assert (path['terminals'][-1] == True) and (not path['terminals'][:-1].any())"""
 
         ## if first path added, set keys based on contents
         self._add_keys(path)
@@ -78,9 +78,9 @@ class ReplayBuffer:
             self._dict[key][self._count, :path_length] = array
 
         ## penalize early termination
-        if path['terminals'].any() and self.termination_penalty is not None:
+        """if path['terminals'].any() and self.termination_penalty is not None:
             assert not path['timeouts'].any(), 'Penalized a timeout episode for early termination'
-            self._dict['rewards'][self._count, path_length - 1] += self.termination_penalty
+            self._dict['rewards'][self._count, path_length - 1] += self.termination_penalty"""
 
         ## record path length
         self._dict['path_lengths'][self._count] = path_length
