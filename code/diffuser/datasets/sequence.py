@@ -66,7 +66,6 @@ class SequenceDataset(torch.utils.data.Dataset):
         self.normalize()
 
         print(fields)
-        import pdb;pdb.set_trace()
         # shapes = {key: val.shape for key, val in self.fields.items()}
         # print(f'[ datasets/mujoco ] Dataset fields: {shapes}')
 
@@ -114,10 +113,11 @@ class SequenceDataset(torch.utils.data.Dataset):
         trajectories = np.concatenate([actions, observations], axis=-1)
 
         if self.include_returns:
-            rewards = self.fields.rewards[path_ind, start:]
+            """rewards = self.fields.rewards[path_ind, start:]
             discounts = self.discounts[:len(rewards)]
             returns = (discounts * rewards).sum()
-            returns = np.array([returns/self.returns_scale], dtype=np.float32)
+            returns = np.array([returns/self.returns_scale], dtype=np.float32)"""
+            returns = self.fields.lang[path_ind, start:][0]
             batch = RewardBatch(trajectories, conditions, returns)
         else:
             batch = Batch(trajectories, conditions)
@@ -210,11 +210,10 @@ class CondSequenceDataset(torch.utils.data.Dataset):
         trajectories = np.concatenate([actions, observations], axis=-1)
 
         if self.include_returns:
-            """rewards = self.fields.rewards[path_ind, start:]
+            rewards = self.fields.rewards[path_ind, start:]
             discounts = self.discounts[:len(rewards)]
             returns = (discounts * rewards).sum()
-            returns = np.array([returns/self.returns_scale], dtype=np.float32)"""
-            returns = self.fields.lang[path_ind, start:][0]
+            returns = np.array([returns/self.returns_scale], dtype=np.float32)
             batch = RewardBatch(trajectories, conditions, returns)
         else:
             batch = Batch(trajectories, conditions)
