@@ -125,7 +125,6 @@ class SequenceSampler:
         for key in self.keys:
             input_arr = self.replay_buffer[key]
             # performance optimization, avoid small allocation if possible
-            print("\n\n\n\nself.key_first_k: ", self.key_first_k)
             if key not in self.key_first_k:
                 sample = input_arr[buffer_start_idx:buffer_end_idx]
             else:
@@ -141,6 +140,8 @@ class SequenceSampler:
                 except Exception as e:
                     import pdb; pdb.set_trace()
             data = sample
+            print("\n\n\n\nkey: ", key)
+            print("sample: ", sample.shape)
             if (sample_start_idx > 0) or (sample_end_idx < self.sequence_length):
                 data = np.zeros(
                     shape=(self.sequence_length,) + input_arr.shape[1:],
