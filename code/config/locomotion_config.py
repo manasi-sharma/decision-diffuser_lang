@@ -19,7 +19,7 @@ class Config(ParamsProto):
     loss_discount = 1
     predict_epsilon = True
     dim_mults = (1, 4, 8)
-    returns_condition = False #True
+    returns_condition = True #False #True
     calc_energy=False
     dim=128
     condition_dropout=0.25
@@ -33,7 +33,7 @@ class Config(ParamsProto):
     preprocess_fns = []
     clip_denoised = True
     use_padding = True
-    include_returns = False #True
+    include_returns = True #False #True
     discount = 0.99
     max_path_length = 1000
     hidden_dim = 256
