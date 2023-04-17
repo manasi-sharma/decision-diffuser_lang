@@ -35,7 +35,7 @@ class SequenceDataset(torch.utils.data.Dataset):
         self.discounts = self.discount ** np.arange(self.max_path_length)[:, None]
         self.use_padding = use_padding
         self.include_returns = include_returns
-        old_itr = sequence_dataset(env, self.preprocess_fn)
+        itr = sequence_dataset(env, self.preprocess_fn)
 
         # Diffusion policy loader
         cfg_dataloader = {'batch_size': 1, 'num_workers': 1, 'persistent_workers': False, 'pin_memory': True, 'shuffle': True}
@@ -43,7 +43,7 @@ class SequenceDataset(torch.utils.data.Dataset):
                             'pad_before': 1, 'robot_noise_ratio': 0.1, 'seed': 42, 'val_ratio': 0.02}
         self.dataset_: BaseLowdimDataset
         self.dataset_ = KitchenMjlLowdimDataset(**cfg_task_dataset)
-        itr = cycle(DataLoader(self.dataset_, **cfg_dataloader)) #**cfg.dataloader)
+        #itr = cycle(DataLoader(self.dataset_, **cfg_dataloader)) #**cfg.dataloader)
 
         fields = ReplayBuffer(max_n_episodes, max_path_length, termination_penalty)
         """goal_state = np.array([ 0.  ,  0.  ,  0.  ,  0.  ,  0.  ,  0.  ,  0.  ,  0.  ,  0.  ,
@@ -51,11 +51,12 @@ class SequenceDataset(torch.utils.data.Dataset):
        -0.05,  0.  ,  0.  ,  0.  , -0.75, -0.23,  0.75,  1.62,  0.99,
         0.  ,  0.  , -0.06])"""
         for i, episode in enumerate(itr):
-            new_episode = {}
+            """new_episode = {}
             new_episode['observations'] = episode['obs'].squeeze()
             new_episode['actions'] = episode['action'].squeeze()
             new_episode['lang'] = episode['lang'].squeeze()
-            fields.add_path(new_episode)
+            fields.add_path(new_episode)"""
+            fields.add_path(episode)
         fields.finalize()
         import pdb;pdb.set_trace()
 
