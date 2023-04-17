@@ -75,8 +75,10 @@ class ReplayBuffer:
         for key in self.keys:
             array = atleast_2d(path[key])
             if key not in self._dict: self._allocate(key, array)
-            import pdb;pdb.set_trace()
-            self._dict[key][self._count, :path_length] = array
+            try:
+                self._dict[key][self._count, :path_length] = array
+            except:
+                import pdb;pdb.set_trace()
 
         ## penalize early termination
         """if path['terminals'].any() and self.termination_penalty is not None:
