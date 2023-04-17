@@ -89,7 +89,6 @@ class Trainer(object):
         self.dataloader = cycle(torch.utils.data.DataLoader(
             self.dataset, batch_size=train_batch_size, num_workers=0, shuffle=True, pin_memory=True
         ))
-        import pdb;pdb.set_trace()
 
         """self.dataloader_vis = cycle(torch.utils.data.DataLoader(
             self.dataset, batch_size=1, num_workers=0, shuffle=True, pin_memory=True
@@ -146,20 +145,8 @@ class Trainer(object):
         for step in range(n_train_steps):
             for i in range(self.gradient_accumulate_every):
                 batch = next(self.dataloader)
-                language = batch['lang'][:, 0, :]
-                language = language.to(self.device)
-                batch = self.normalizer.normalize(batch)
                 batch = batch_to_device(batch, device=self.device)
-
-                trajectories = torch.concatenate([batch['action'], batch['obs']], axis=-1)
-                conditions = {0: batch['obs'][:, 0, :]}
-
-                #loss, infos = self.model.loss(*batch)
-                # trajectories: torch.Size([256, 16, 69]) vs. torch.Size([32, 100, 14])
-                # conditions: torch.Size([16, 60]) (from 0 of [256, 16, 69]) vs. torch.Size([32, 11])
-                # lang: torch.Size([256, 16, 384]) vs. torch.Size([32, 1])
-                loss, infos = self.model.loss(trajectories, conditions, language)
-                #loss, infos = self.model.loss(trajectories, conditions)
+                loss, infos = self.model.loss(*batch)
                 loss = loss / self.gradient_accumulate_every
                 loss.backward()
 
