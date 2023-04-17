@@ -125,6 +125,7 @@ class SequenceSampler:
         for key in self.keys:
             input_arr = self.replay_buffer[key]
             # performance optimization, avoid small allocation if possible
+            print("\n\n\n\nself.key_first_k: ", self.key_first_k)
             if key not in self.key_first_k:
                 sample = input_arr[buffer_start_idx:buffer_end_idx]
             else:
@@ -150,5 +151,5 @@ class SequenceSampler:
                     data[sample_end_idx:] = sample[-1]
                 data[sample_start_idx:sample_end_idx] = sample
             result[key] = data
-        import pdb;pdb.set_trace()
+        #import pdb;pdb.set_trace()
         return result
