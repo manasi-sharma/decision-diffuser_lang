@@ -46,10 +46,6 @@ class SequenceDataset(torch.utils.data.Dataset):
         #itr = cycle(DataLoader(self.dataset_, **cfg_dataloader)) #**cfg.dataloader)
 
         fields = ReplayBuffer(max_n_episodes, max_path_length, termination_penalty)
-        """goal_state = np.array([ 0.  ,  0.  ,  0.  ,  0.  ,  0.  ,  0.  ,  0.  ,  0.  ,  0.  ,
-        0.  ,  0.  , -0.88, -0.01,  0.  ,  0.  ,  0.  ,  0.  , -0.69,
-       -0.05,  0.  ,  0.  ,  0.  , -0.75, -0.23,  0.75,  1.62,  0.99,
-        0.  ,  0.  , -0.06])"""
         for i, episode in enumerate(itr):
             """new_episode = {}
             new_episode['observations'] = episode['obs'].squeeze()
