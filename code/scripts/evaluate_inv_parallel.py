@@ -170,7 +170,7 @@ def evaluate(**deps):
 
     model = model_config()
     diffusion = diffusion_config(model)
-    trainer = trainer_config(diffusion, dataset, renderer, train_or_val='val')
+    trainer = trainer_config(diffusion, dataset, renderer) #, train_or_val='val')
     logger.print(utils.report_parameters(model), color='green')
     trainer.step = state_dict['step']
     trainer.model.load_state_dict(state_dict['model'])

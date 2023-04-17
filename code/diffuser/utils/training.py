@@ -64,7 +64,7 @@ class Trainer(object):
         bucket=None,
         train_device='cuda',
         save_checkpoints=False,
-        train_or_val='train'
+        #train_or_val='train'
     ):
         super().__init__()
         self.model = diffusion_model
@@ -86,10 +86,10 @@ class Trainer(object):
         self.dataset = dataset
 
         # Actual load in of data from directories
-        self.dataloader_decdiff = cycle(torch.utils.data.DataLoader(
+        """self.dataloader_decdiff = cycle(torch.utils.data.DataLoader(
             self.dataset, batch_size=train_batch_size, num_workers=0, shuffle=True, pin_memory=True
         ))
-        """self.dataloader_vis = cycle(torch.utils.data.DataLoader(
+        self.dataloader_vis = cycle(torch.utils.data.DataLoader(
             self.dataset, batch_size=1, num_workers=0, shuffle=True, pin_memory=True
         ))"""
         cfg_dataloader = {'batch_size': 256, 'num_workers': 1, 'persistent_workers': False, 'pin_memory': True, 'shuffle': True}
@@ -101,11 +101,12 @@ class Trainer(object):
         #dataset = hydra.utils.instantiate(cfg_task_dataset) #cfg.task.dataset)
         self.dataset = KitchenMjlLowdimDataset(**cfg_task_dataset)
         self.normalizer = self.dataset.get_normalizer()
-        if train_or_val:
+        self.dataloader = cycle(DataLoader(self.dataset, **cfg_dataloader)) #**cfg.dataloader)
+        """if train_or_val:
             self.dataloader = cycle(DataLoader(self.dataset, **cfg_dataloader)) #**cfg.dataloader)
         else:
             val_dataset = self.dataset.get_validation_dataset()
-            self.dataloader = cycle(DataLoader(val_dataset, **cfg_valdataloader))
+            self.dataloader = cycle(DataLoader(val_dataset, **cfg_valdataloader))"""
         import pdb;pdb.set_trace()
         # Create normalize
         #self.dataset_normalizer = self.dataset.get_normalizer()
